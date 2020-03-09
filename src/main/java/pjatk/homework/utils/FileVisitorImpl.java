@@ -10,9 +10,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 
 @Slf4j
-public class FileVisitorImpl implements FileVisitor<Path> {
+class FileVisitorImpl implements FileVisitor<Path> {
 
+    private ReaderWriter readerWriter;
 
+    FileVisitorImpl(ReaderWriter readerWriter){
+        this.readerWriter = readerWriter;
+    }
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {

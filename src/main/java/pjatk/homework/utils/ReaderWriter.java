@@ -2,32 +2,29 @@ package pjatk.homework.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 
-import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 
 @Slf4j
-public class ReaderWriter {
+class ReaderWriter {
 
     private Path targetFilePath;
 
-    public ReaderWriter(Path targetFilePath){
+    ReaderWriter(Path targetFilePath) {
         this.targetFilePath = targetFilePath;
     }
 
-    public void readAndWriteToTargetFile(Path filePath) throws FileNotFoundException {
-        File file = new File(filePath.getFileName().toAbsolutePath().toString());
-        RandomAccessFile reader = new RandomAccessFile(file, "r");
-        FileChannel channel = reader.getChannel();
-
-
-
+    public void readAndWriteToTargetFile(Path filePath) {
+        try (FileChannel sourceFile = new FileInputStream(filePath.toFile()).getChannel();
+             FileChannel targetFile = new FileInputStream(targetFilePath.toFile()).getChannel()) {
+            targetFile.position(targetFile.size());
+            sourceFile.transferTo(0, sourceFile.size(), targetFile);
+        } catch (IOException e) {
+            log.error(Arrays.toString(e.getStackTrace()));
+        }
     }
-
-
-
 }
